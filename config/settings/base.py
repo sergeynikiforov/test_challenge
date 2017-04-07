@@ -47,9 +47,10 @@ DJANGO_APPS = [
     'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
-    'allauth',  # registration
-    'allauth.account',  # registration
-    'rest_framework',  # DRF
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',  # django-rest-auth
     'rest_auth.registration',  # enable registration
@@ -248,10 +249,12 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-# Some really nice defaults
-ACCOUNT_AUTHENTICATION_METHOD = 'username'
+# django-allauth
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_USERNAME_REQUIRED = False
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_ADAPTER = 'test_challenge.users.adapters.AccountAdapter'
@@ -260,7 +263,7 @@ SOCIALACCOUNT_ADAPTER = 'test_challenge.users.adapters.SocialAccountAdapter'
 # Custom user app defaults
 # Select the correct user model
 AUTH_USER_MODEL = 'users.User'
-LOGIN_REDIRECT_URL = 'users:redirect'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = 'account_login'
 
 # SLUGLIFIER
