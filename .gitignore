@@ -63,3 +63,4 @@ test_challenge/media/
 staticfiles/
 
 env.example
+.env

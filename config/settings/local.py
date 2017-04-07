@@ -29,10 +29,9 @@ SECRET_KEY = env('DJANGO_SECRET_KEY', default='ILKQa<Jsnn4;23rSlR,aoP-e,_Ee}_E-/
 # ------------------------------------------------------------------------------
 
 EMAIL_PORT = 1025
-
 EMAIL_HOST = 'localhost'
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND',
-                    default='django.core.mail.backends.console.EmailBackend')
+                    default='django.core.mail.backends.smtp.EmailBackend')
 
 
 # CACHING
@@ -70,5 +69,5 @@ INSTALLED_APPS += ['django_extensions', ]
 # ------------------------------------------------------------------------------
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
-# Your local stuff: Below this line define 3rd party library settings
+# 3rd party library settings
 # ------------------------------------------------------------------------------

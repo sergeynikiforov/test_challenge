@@ -47,10 +47,12 @@ DJANGO_APPS = [
     'django.contrib.admin',
 ]
 THIRD_PARTY_APPS = [
-    'crispy_forms',  # Form layouts
     'allauth',  # registration
     'allauth.account',  # registration
-    'allauth.socialaccount',  # registration
+    'rest_framework',  # DRF
+    'rest_framework.authtoken',
+    'rest_auth',  # django-rest-auth
+    'rest_auth.registration',  # enable registration
 ]
 
 # Apps specific for this project go here.
@@ -111,7 +113,7 @@ MANAGERS = ADMINS
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
-    'default': env.db('DATABASE_URL', default='postgres:///test_challenge'),
+    'default': env.db('DJANGO_DATABASE_URL', default='postgres:///test_challenge'),
 }
 DATABASES['default']['ATOMIC_REQUESTS'] = True
 
@@ -169,14 +171,11 @@ TEMPLATES = [
                 'django.template.context_processors.static',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
-                # Your stuff: custom template context processors go here
+                # custom template context processors go here
             ],
         },
     },
 ]
-
-# See: http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -267,9 +266,27 @@ LOGIN_URL = 'account_login'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
-
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
 
-# Your common stuff: Below this line define 3rd party library settings
+# 3rd party library settings
 # ------------------------------------------------------------------------------
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
+
+# Use JSON Web tokens
+REST_USE_JWT = True
+
+# DRF JWT
+JWT_AUTH = {
+
+}
