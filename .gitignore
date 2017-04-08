@@ -64,3 +64,5 @@ staticfiles/
 
 env.example
 .env
+.cache/
+docs/_build

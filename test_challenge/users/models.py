@@ -28,6 +28,7 @@ class UserManager(BaseUserManager):
             password=password,
         )
         user.is_admin = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user
 
@@ -71,22 +72,19 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         """
         Returns self.first_name + self.last_name with space in between
-        :return: str - full name
+        If none of first_name or last_name is filled, returns email
+        :return: str
         """
-        return '{first_name} {last_name}'.format(first_name=self.first_name, last_name=self.last_name).strip()
+        if self.first_name or self.last_name:
+            return '{first_name} {last_name}'.format(first_name=self.first_name, last_name=self.last_name).strip()
+        return self.email
 
     def get_short_name(self):
         """
         Returns self.email
-        :return: 
+        :return: str
         """
         return self.email
-
-    def has_perm(self, perm, obj=None):
-        return True
-
-    def has_module_perms(self, app_label):
-        return True
 
     @property
     def is_staff(self):
