@@ -7,7 +7,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker('last_name')
     is_active = True
     is_admin = False
-    is_verified = False
     team = factory.SubFactory('test_challenge.users.tests.factories.TeamFactory')
     password = factory.PostGenerationMethodCall('set_password', 'password')
 

@@ -48,7 +48,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
     is_active = models.BooleanField(_('is active'), default=True)
     is_admin = models.BooleanField(_('is administrator'), default=False)
-    is_verified = models.BooleanField(_('is verified'), default=False)
     team = models.ForeignKey(
         'users.Team',
         verbose_name='team',
