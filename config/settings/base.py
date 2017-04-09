@@ -258,7 +258,6 @@ ACCOUNT_USERNAME_REQUIRED = False
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
 ACCOUNT_ADAPTER = 'test_challenge.users.adapters.AccountAdapter'
-SOCIALACCOUNT_ADAPTER = 'test_challenge.users.adapters.SocialAccountAdapter'
 
 # Custom user app defaults
 # Select the correct user model
@@ -281,15 +280,11 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
     ),
 }
 
-# Use JSON Web tokens
+# rest-auth
 REST_USE_JWT = True
-
-# DRF JWT
-JWT_AUTH = {
-
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'test_challenge.users.serializers.UserSerializer',
 }
