@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_auth.serializers import PasswordResetSerializer
+from allauth.account.forms import ResetPasswordForm
 
 from test_challenge.users.models import User, Team
 
@@ -21,3 +23,7 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = ('id', 'name', 'members')
+
+
+class PasswordSerializer(PasswordResetSerializer):
+    password_reset_form_class = ResetPasswordForm

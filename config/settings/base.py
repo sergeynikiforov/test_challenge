@@ -284,5 +284,6 @@ REST_FRAMEWORK = {
 REST_USE_JWT = True
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'test_challenge.users.serializers.UserSerializer',
+    'PASSWORD_RESET_SERIALIZER': 'test_challenge.users.serializers.PasswordSerializer',
 }
 REST_SESSION_LOGIN = False

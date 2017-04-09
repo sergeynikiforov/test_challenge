@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.views import defaults as default_views
 from allauth.account.views import confirm_email as all_auth_email_confirmation
 
+
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     url(settings.ADMIN_URL, admin.site.urls),
