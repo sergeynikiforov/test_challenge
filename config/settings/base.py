@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
 import environ
+import datetime
 
 ROOT_DIR = environ.Path(__file__) - 3  # (test_challenge/config/settings/base.py - 3 = test_challenge/)
 APPS_DIR = ROOT_DIR.path('test_challenge')
@@ -38,9 +39,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.staticfiles',
-
-    # Useful template tags:
-    # 'django.contrib.humanize',
+    'django.contrib.messages',
 
     # Admin
     'django.contrib.admin',
@@ -73,6 +72,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -168,6 +168,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
+                'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.tz',
                 # custom template context processors go here
             ],
@@ -278,6 +279,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
+    'PAGE_SIZE': 10,
 }
 
 # rest-auth
@@ -287,3 +289,9 @@ REST_AUTH_SERIALIZERS = {
     'PASSWORD_RESET_SERIALIZER': 'test_challenge.users.serializers.PasswordSerializer',
 }
 REST_SESSION_LOGIN = False
+OLD_PASSWORD_FIELD_ENABLED = True
+
+# JWT
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
+}

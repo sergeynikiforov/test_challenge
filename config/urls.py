@@ -11,7 +11,7 @@ urlpatterns = [
     url(settings.ADMIN_URL, admin.site.urls),
 
     # User management
-    url(r'^', include('test_challenge.users.urls', namespace='users')),
+    url(r'^', include('test_challenge.users.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
     # django-rest-auth
