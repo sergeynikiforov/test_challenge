@@ -1,11 +1,12 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
+from rest_framework import mixins
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import mixins
-from rest_framework import status
+from rest_framework.settings import api_settings
 
 
 from test_challenge.users.models import Team, User
@@ -72,6 +73,32 @@ class TeamNestedViewSet(viewsets.GenericViewSet):
     def partial_update(self, request, *args, **kwargs):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+    def create(self, request, *args, member_pk=None, **kwargs):
+        # make sure the user doesn't have a team already
+        user = get_object_or_404(User.objects.all(), pk=member_pk)
+        if user.team:
+            return Response({'error': 'User already has a Team'}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        team = self.perform_create(serializer)
+        user.team = team
+        user.save()
+
+        # update team instance
+        serializer_upd = self.get_serializer(team)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer_upd.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def perform_create(self, serializer):
+        return serializer.save()
+
+    def get_success_headers(self, data):
+        try:
+            return {'Location': data[api_settings.URL_FIELD_NAME]}
+        except (TypeError, KeyError):
+            return {}
 
 
 class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
