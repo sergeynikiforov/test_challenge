@@ -2,11 +2,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, detail_route
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.settings import api_settings
+from invitations.models import Invitation
 
 
 from test_challenge.users.models import Team, User
@@ -75,7 +76,7 @@ class TeamNestedViewSet(viewsets.GenericViewSet):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
 
-    def create(self, request, *args, member_pk=None, **kwargs):
+    def create(self, request, *args, member_pk=None, format=None, **kwargs):
         # make sure the user doesn't have a team already
         user = get_object_or_404(User.objects.all(), pk=member_pk)
         if user.team:
@@ -109,3 +110,17 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Updat
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticatedAndIsAdminOrSelfIfUserChanged,)
+
+    @detail_route(methods=['post'], permission_classes=[IsAuthenticatedAndIsAdminOrSelfIfUserChanged])
+    def invite(self, request, *args, pk=None, format=None, **kwargs):
+        """
+        Sends invites
+        """
+        invitee_email = request.data.get('email')
+        if invitee_email is None:
+            return Response({'error': 'email field is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        invite = Invitation.create(invitee_email, inviter=request.user)
+        invite.send_invitation(request)
+
+        return Response({'detail': 'invitation sent'}, status=status.HTTP_200_OK)

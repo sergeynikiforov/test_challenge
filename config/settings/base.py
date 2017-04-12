@@ -52,6 +52,7 @@ THIRD_PARTY_APPS = [
     'rest_framework.authtoken',
     'rest_auth',  # django-rest-auth
     'rest_auth.registration',  # enable registration
+    'invitations',  # invitations app (have to be placed after the allauth app)
 ]
 
 # Apps specific for this project go here.
@@ -255,7 +256,6 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
-ACCOUNT_ADAPTER = 'test_challenge.users.adapters.AccountAdapter'
 
 # Custom user app defaults
 # Select the correct user model
@@ -295,3 +295,7 @@ OLD_PASSWORD_FIELD_ENABLED = True
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
 }
+
+# django-invitations
+ACCOUNT_ADAPTER = 'invitations.models.InvitationsAdapter'
+INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True

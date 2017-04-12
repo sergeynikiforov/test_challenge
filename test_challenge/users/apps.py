@@ -10,4 +10,4 @@ class UsersConfig(AppConfig):
             Users system checks
             Users signal registration
         """
-        pass
+        import  test_challenge.users.signals #noqa

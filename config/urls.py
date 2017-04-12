@@ -11,7 +11,6 @@ urlpatterns = [
     url(settings.ADMIN_URL, admin.site.urls),
 
     # User management
-    url(r'^', include('test_challenge.users.urls')),
     url(r'^accounts/', include('allauth.urls')),
 
     # django-rest-auth
@@ -19,6 +18,12 @@ urlpatterns = [
         all_auth_email_confirmation, name="account_confirm_email"),
     url(r'^auth/registration/', include('rest_auth.registration.urls')),
     url(r'^auth/', include('rest_auth.urls')),
+
+    # django-invitations
+    url(r'^invitations/', include('invitations.urls', namespace='invitations')),
+
+    # users app
+    url(r'^', include('test_challenge.users.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

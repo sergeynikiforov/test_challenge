@@ -37,3 +37,6 @@ djangorestframework==3.6.2
 django-rest-auth==0.9.1
 djangorestframework-jwt==1.10.0
 drf-nested-routers==0.90.0
+
+# invitations app
+django-invitations==1.9
