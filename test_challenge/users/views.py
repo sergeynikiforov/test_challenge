@@ -11,7 +11,8 @@ from rest_framework.settings import api_settings
 
 from test_challenge.users.models import Team, User
 from test_challenge.users.serializers import TeamSerializer, UserSerializer, TeamNestedSerializer
-from test_challenge.users.permissions import IsAuthenticatedAndIsAdminIfUpdated
+from test_challenge.users.permissions import IsAuthenticatedAndIsAdminOrSelfIfUserChanged, \
+    IsAuthenticatedAndIsMemberIfTeamChanged
 
 
 @api_view(['GET'])
@@ -28,7 +29,7 @@ class TeamViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Updat
     """
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAuthenticatedAndIsMemberIfTeamChanged)
 
 
 class TeamNestedViewSet(viewsets.GenericViewSet):
@@ -107,4 +108,4 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Updat
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsAuthenticatedAndIsAdminIfUpdated,)
+    permission_classes = (IsAuthenticatedAndIsAdminOrSelfIfUserChanged,)
