@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^invitations/', include('invitations.urls', namespace='invitations')),
 
     # users app
-    url(r'^', include('test_challenge.users.urls')),
+    url(r'^api/', include('test_challenge.users.urls', namespace='test_challenge')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

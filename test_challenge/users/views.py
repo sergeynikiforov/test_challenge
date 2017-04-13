@@ -2,26 +2,17 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import status
-from rest_framework.decorators import api_view, detail_route
+from rest_framework.decorators import detail_route
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.settings import api_settings
 from invitations.models import Invitation
 
 
 from test_challenge.users.models import Team, User
-from test_challenge.users.serializers import TeamSerializer, UserSerializer, TeamNestedSerializer
+from test_challenge.users.serializers import TeamSerializer, UserSerializer
 from test_challenge.users.permissions import IsAuthenticatedAndIsAdminOrSelfIfUserChanged, \
     IsAuthenticatedAndIsMemberIfTeamChanged
-
-
-@api_view(['GET'])
-def api_root(request, format=None):
-    return Response({
-        'users': reverse('user-list', request=request, format=format),
-        'teams': reverse('team-list', request=request, format=format)
-    })
 
 
 class TeamViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
@@ -39,24 +30,26 @@ class TeamNestedViewSet(viewsets.GenericViewSet):
     """
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (IsAuthenticated, IsAuthenticatedAndIsMemberIfTeamChanged)
 
-    def list(self, request, member_pk=None, format=None):
+    def list(self, request, member_pk=None):
         queryset = self.get_queryset().filter(member__pk=member_pk)
         serializer = TeamSerializer(queryset, many=True, context={'request': request})
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None, member_pk=None, format=None):
+    def retrieve(self, request, pk=None, member_pk=None):
         queryset = self.get_queryset().filter(member__pk=member_pk)
         team = get_object_or_404(queryset, pk=pk)
         serializer = TeamSerializer(team, context={'request': request})
         return Response(serializer.data)
 
-    def update(self, request, *args, pk=None, member_pk=None, format=None, **kwargs):
+    def update(self, request, *args, pk=None, member_pk=None, **kwargs):
         partial = kwargs.pop('partial', False)
         # check if User is part of that particular Team
         queryset = self.get_queryset().filter(member__pk=member_pk)
         instance = get_object_or_404(queryset, pk=pk)
+        if request.user.team != instance:
+            return Response({'error': 'you are not a member of that team'}, status=status.HTTP_403_FORBIDDEN)
 
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -76,7 +69,7 @@ class TeamNestedViewSet(viewsets.GenericViewSet):
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
 
-    def create(self, request, *args, member_pk=None, format=None, **kwargs):
+    def create(self, request, *args, member_pk=None, **kwargs):
         # make sure the user doesn't have a team already
         user = get_object_or_404(User.objects.all(), pk=member_pk)
         if user.team:
@@ -112,7 +105,7 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.Updat
     permission_classes = (IsAuthenticatedAndIsAdminOrSelfIfUserChanged,)
 
     @detail_route(methods=['post'], permission_classes=[IsAuthenticatedAndIsAdminOrSelfIfUserChanged])
-    def invite(self, request, *args, pk=None, format=None, **kwargs):
+    def invite(self, request, *args, pk=None, **kwargs):
         """
         Sends invites
         """
