@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User
+from .models import User, Team
 from .forms import UserChangeForm, UserCreationForm
 
 
@@ -19,6 +19,7 @@ class UserAdmin(BaseUserAdmin):
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
         ('Permissions', {'fields': ('is_admin',)}),
+        ('Team', {'fields': ('team',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -34,5 +35,20 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ()
 
+
+class UserInline(admin.StackedInline):
+    model = User
+    fields = ('email', 'first_name', 'last_name')
+    readonly_fields = ('email', 'first_name', 'last_name')
+    extra = 0
+
+
+class TeamAdmin(admin.ModelAdmin):
+    inlines = [
+        UserInline,
+    ]
+
+
 # Register the new UserAdmin
 admin.site.register(User, UserAdmin)
+admin.site.register(Team, TeamAdmin)

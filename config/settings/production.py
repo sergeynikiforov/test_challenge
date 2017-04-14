@@ -112,14 +112,11 @@ DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL',
 EMAIL_SUBJECT_PREFIX = env('DJANGO_EMAIL_SUBJECT_PREFIX', default='[test_challenge]')
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 
-# Anymail with Mailgun
+# Anymail with Sendgrid
 INSTALLED_APPS += ['anymail', ]
 ANYMAIL = {
-    #'MAILGUN_API_KEY': env('MAILGUN_API_KEY'),
-    #'MAILGUN_SENDER_DOMAIN': env('MAILGUN_SENDER_DOMAIN'),
     'SENDGRID_API_KEY': env('SENDGRID_API_KEY'),
 }
-# EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
 EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
 
 
