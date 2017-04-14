@@ -115,10 +115,13 @@ SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)
 # Anymail with Mailgun
 INSTALLED_APPS += ['anymail', ]
 ANYMAIL = {
-    'MAILGUN_API_KEY': env('MAILGUN_API_KEY'),
-    'MAILGUN_SENDER_DOMAIN': env('MAILGUN_SENDER_DOMAIN')
+    #'MAILGUN_API_KEY': env('MAILGUN_API_KEY'),
+    #'MAILGUN_SENDER_DOMAIN': env('MAILGUN_SENDER_DOMAIN'),
+    'SENDGRID_API_KEY': env('SENDGRID_API_KEY'),
 }
-EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
+# EMAIL_BACKEND = 'anymail.backends.mailgun.MailgunBackend'
+EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+
 
 # TEMPLATE CONFIGURATION
 # ------------------------------------------------------------------------------
