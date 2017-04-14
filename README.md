@@ -56,7 +56,9 @@ After obtaining the token, it should be included into all the subsequent request
     * `/users/<member_pk>/teams/`
         - `GET` - lists the team of user with `pk == member_pk`
         - `POST` - create new Team and become a member of it - available only if the user doesn't have a team yet (expects `name`)
-        - `PUT`, `PATCH` - replace, update the team of user with `pk == member_pk`
+    * `/users/<member_pk>/teams/<pk>/`
+        - `GET` - detail view of the team that user with `member_pk` belongs to
+        - `PUT`, `PATCH` - replace, update the team that user with `member_pk` belongs to
 * `/auth/` - manage accounts
     * `/login/`
         - `POST` - log the user in - expects `email`, `password`. Returns JWT token.
