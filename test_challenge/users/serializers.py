@@ -10,7 +10,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     """
     DRF serializer for User model
     """
-    team = serializers.HyperlinkedIdentityField(view_name="test_challenge:team-detail")
+    team = serializers.HyperlinkedRelatedField(view_name="test_challenge:team-detail",
+                                               many=False,
+                                               allow_null=True,
+                                               read_only=True)
 
     class Meta:
         model = User
